@@ -355,8 +355,27 @@
   margin-bottom: 30px;
 }
 
+.downloadSkeleton {
+  background-color: rgb(91, 89, 89);
+  border-radius: 1rem;
+  padding: 7px;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: #fff;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
 .deleteButton {
     background-color: #ED2460;
+    border-radius: 100%;
+    padding: 3px;
+    color: #fff;
+    margin-right: 10px;
+}
+
+.deleteButtonSkeleton {
+    background-color: rgb(91, 89, 89);
     border-radius: 100%;
     padding: 3px;
     color: #fff;
