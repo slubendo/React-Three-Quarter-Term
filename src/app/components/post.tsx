@@ -9,31 +9,32 @@ export default function Post(post: PostProps) {
 
 
     return (
-        <main>
-
-            <div className="cont_principal">
+            <div className="cont_principal my-28">
                 <div className="cont_central">
-                    <div className="cont_modal cont_modal_active">
-                        <div className="cont_photo">
-                            <div className="cont_img_back">
-                                <img src="https://s-media-cache-ak0.pinimg.com/736x/57/98/9f/57989f2a2e186e38bf93429aa395120c.jpg" alt="" />
-                            </div>
-                            <div className="cont_mins">
-                                <div className="sub_mins">
-                                    <h3>50</h3>
-                                    <span>MINS</span>
+                    <div className="flex cont_modal cont_modal_active">
+                        <div className="cont_photo cont_img_back" style={{ background: "#eee", backgroundImage: `url('https://s-media-cache-ak0.pinimg.com/736x/57/98/9f/57989f2a2e186e38bf93429aa395120c.jpg')`, backgroundSize: "cover" }}>
+                            <div className="flex flex-col justify-between contPhotoDetails">
+                                <div className="m-0">
+                                <div className="cont_mins">
+                                    <div className="sub_mins">
+                                        <h3>50</h3>
+                                        <span>MINS</span>
+                                    </div>
+                                    <div className="cont_icon_right">
+                                        <Delete id={0}></Delete>
+                                    </div>
                                 </div>
-                                <div className="cont_icon_right">
-                                    <Delete id={0}></Delete>
+                                <div className="cont_servings">
+                                    <h3>4</h3>
+                                    <span>SERVINGS</span>
                                 </div>
-                            </div>
-                            <div className="cont_servings">
-                                <h3>4</h3>
-                                <span>SERVINGS</span>
-                            </div>
-                            <div className="cont_detalles contRecipeTitle">
-                                <div className="contRecipeTitle">
-                                    <p className='recipeTitle'>Shakshuka With Feta</p>
+                                </div>
+                                <div className="flex flex-wrap w-full bottom-0 relative justify-end">
+                                    <div className="cont_detalles contRecipeTitle">
+                                        <div className="contRecipeTitle">
+                                            <p className='recipeTitle'>Shakshuka With Feta</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -79,6 +80,5 @@ export default function Post(post: PostProps) {
                     </div>
                 </div>
             </div>
-        </main>
     )
 }

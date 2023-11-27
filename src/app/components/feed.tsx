@@ -9,9 +9,10 @@ export default function Feed({ postArr }: FeedProps) {
 const feed = postArr?.map(post => <Post post={post}></Post>)
 
 return (
-    <div>
+    <div className="feed">
         {feed}
     </div>
 )
 }
 
+    

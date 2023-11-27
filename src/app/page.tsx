@@ -1,10 +1,21 @@
 import Feed from "./components/feed";
+import Form from "./components/form";
+import { auth } from "@/auth"
 
-export default function Home() {
+export default async function Home() {
 
-const stringArr = ["hello", "world"]
+  const session = await auth()
+  // name 
+  // email
+  // image
+
+
+  const stringArr = ["hello", "world"]
 
   return (
-<Feed postArr={stringArr} ></Feed>
+   <main>
+     <Form></Form>  
+     <Feed postArr={stringArr} ></Feed>
+   </main>
   )
 }
