@@ -41,18 +41,26 @@ export default function Form() {
             <div className="sm:max-w-lg w-full p-10 bg-white rounded-xl z-10">
                 <div className="text-center">
                     <h2 className="mt-5 text-3xl font-bold text-gray-900">
-                        File Upload!
+                        Upload a Recipe!
                     </h2>
                     <p className="mt-2 text-sm text-gray-400">Lorem ipsum is placeholder text.</p>
                 </div>
                 <form className="mt-8 space-y-3" onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 space-y-2">
-                        <input className="w-full text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="text" placeholder="Recipe Name" />
+                        <input className="w-full text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="text" placeholder="Recipe Name"
+                        onChange={(e) => setRecipeName(e.target.value)}
+                        />
                         <div className="flex justify-between w-full">
-                            <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="number" placeholder="Cooking Time" />
-                            <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="number" placeholder="Servings" />
+                            <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="number" placeholder="Cooking Time"
+                            onChange={(e) => setMins(parseInt(e.target.value))}
+                            />
+                            <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="number" placeholder="Servings" 
+                            onChange={(e) => setServings(parseInt(e.target.value))}
+                            />
                         </div>
-                        <textarea className="w-full text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="Description" />
+                        <textarea className="w-full text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="Description" 
+                        onChange={(e) => setDescription(e.target.value)}
+                        />
                     </div>
                     <div className="grid grid-cols-1 space-y-2">
                         <div className="text-sm font-bold text-gray-500 tracking-wide">Attach Document</div>
