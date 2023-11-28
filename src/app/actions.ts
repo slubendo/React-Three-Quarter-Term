@@ -5,28 +5,33 @@
   import { users } from "@/db/schema/schema";
   import { revalidatePath } from "next/cache"
 
-  export async function createPosts(amount: number, description: string, date: string, categoryId:number) {
-
-    const amountAsString = amount.toString();
+  export async function createPost(recipeName: string, mins: number, servings: number, description:string, image:string, file:string, userId:string) {
+    "use server"
 
     console.log({
-      amount,
+      recipeName,
+      mins,
+      servings,
       description,
-      date,
-      categoryId,
+      image,
+      file,
+      userId
     });
+   
 
-    if (!description || !amount || !date) {
+    if (!recipeName || !mins || !servings || !description || !image || !file) {
       return { error: "Please fill the entire form" };
     }
 
-    const result = await db.insert(posts).values({ amount: amountAsString, description, date, categoryId }).returning();
+    const result = await db.insert(posts).values({ userId, recipeName, content:description, servings, mins, url:image, file }).returning();
     console.log({ result });
 
     revalidatePath("/")
   }
 
   export async function deletePost(id: number) {
+    "use server"
+
     console.log(id);
     await db.delete(posts).where(eq(posts.id, id));
 

@@ -19,6 +19,7 @@ import {
   export const posts = pgTable("posts", {
     id: serial("id").primaryKey(),
     userId: text("user_id").notNull().references(() => users.id),
+    recipeName: text("recipe_name").notNull(),
     content: text("content").notNull(),
     servings: integer("servings").notNull(),
     mins: integer("mins").notNull(),

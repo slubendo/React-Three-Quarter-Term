@@ -1,11 +1,40 @@
 "use client"
 
+import { createPost } from "../actions";
+import { useState } from "react";
+import { auth } from "@/auth"
+
+
+
 function handleClick(e: React.FormEvent) {
     e.preventDefault()
     document.getElementById('getFile')?.click()
 }
 
 export default function Form() {
+    
+    const [recipeName, setRecipeName] = useState("");
+    const [mins, setMins] = useState(0);
+    const [servings, setServings] = useState(0);
+    const [description, setDescription] = useState("");
+    const [image, setImage] = useState("");
+    const [file, setFile] = useState("");
+    // const [loading, setLoading] = useState(true);
+
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        const session = await auth()
+        const result = await createPost(recipeName, mins, servings, description, image, file, session?.user.id ?? "")
+
+        setRecipeName("");
+        setMins(0);
+        setServings(0);
+        setDescription("");
+        setImage("");
+        setFile("");
+    };
 
     return (
         <div className="relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover">
@@ -16,7 +45,7 @@ export default function Form() {
                     </h2>
                     <p className="mt-2 text-sm text-gray-400">Lorem ipsum is placeholder text.</p>
                 </div>
-                <form className="mt-8 space-y-3" action="#" method="POST">
+                <form className="mt-8 space-y-3" onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 space-y-2">
                         <input className="w-full text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="text" placeholder="Recipe Name" />
                         <div className="flex justify-between w-full">
