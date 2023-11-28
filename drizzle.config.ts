@@ -1,4 +1,5 @@
 import { Config } from "drizzle-kit"
+
 import * as dotenv from 'dotenv';
 
 dotenv.config({
@@ -9,7 +10,7 @@ export default {
   schema: "./src/db/schema/*",
   driver: "pg",
   dbCredentials: {
-    connectionString: process.env.MIGRATION_DATABASE_URL!, 
+    connectionString: process.env.MIGRATION_DATABASE_URL!,
   },
   out: "./drizzle",
 } satisfies Config
