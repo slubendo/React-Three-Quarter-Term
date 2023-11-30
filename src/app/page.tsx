@@ -5,16 +5,12 @@ import { auth } from "@/auth"
 export default async function Home() {
 
   const session = await auth()
-  // name 
-  // email
-  // image
-
 
   const stringArr = ["hello", "world"]
 
   return (
    <main>
-     <Form></Form>  
+     <Form userId={session?.user.id ?? ""}></Form>  
      <Feed postArr={stringArr} ></Feed>
    </main>
   )

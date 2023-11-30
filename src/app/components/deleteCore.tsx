@@ -1,3 +1,4 @@
+"use client"
 import { deletePost } from "../actions"
 
 interface DeleteCoreProps {

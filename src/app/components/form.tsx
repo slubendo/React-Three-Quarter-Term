@@ -11,7 +11,10 @@ function handleClick(e: React.FormEvent) {
     document.getElementById('getFile')?.click()
 }
 
-export default function Form() {
+interface FormProps {
+    userId: string
+}
+export default async function Form({userId}:FormProps) {
     
     const [recipeName, setRecipeName] = useState("");
     const [mins, setMins] = useState(0);
@@ -25,8 +28,9 @@ export default function Form() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
-        const session = await auth()
-        const result = await createPost(recipeName, mins, servings, description, image, file, session?.user.id ?? "")
+        if(userId) {
+            const result = await createPost(recipeName, mins, servings, description, image, file, userId)
+        }
 
         setRecipeName("");
         setMins(0);
@@ -63,14 +67,29 @@ export default function Form() {
                         />
                     </div>
                     <div className="grid grid-cols-1 space-y-2">
-                        <div className="text-sm font-bold text-gray-500 tracking-wide">Attach Document</div>
+                        <div className="text-sm font-bold text-gray-500 tracking-wide">Attach an Image</div>
                         <div className="flex items-center justify-center w-full">
                             <div className="flex flex-col rounded-lg border-4 border-dashed w-full p-10 group text-center">
                                 <div className="h-full w-full text-center flex flex-col items-center justify-center">
                                     <div className="flex flex-auto max-h-48 w-2/5 mx-auto -mt-10">
                                     </div>
                                     <div className="pointer-none text-blue-600 hover:underline ">
-                                        <button style={{ display: "block", width: "120px", height: "30px" }} onClick={handleClick}>Upload Recipe</button>
+                                        <button style={{ display: "block", width: "120px", height: "30px" }} >Upload Image</button>
+                                        <input type="file" id="getFile" style={{ display: "none" }} className="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 space-y-2">
+                        <div className="text-sm font-bold text-gray-500 tracking-wide">Attach a Recipe</div>
+                        <div className="flex items-center justify-center w-full">
+                            <div className="flex flex-col rounded-lg border-4 border-dashed w-full p-10 group text-center">
+                                <div className="h-full w-full text-center flex flex-col items-center justify-center">
+                                    <div className="flex flex-auto max-h-48 w-2/5 mx-auto -mt-10">
+                                    </div>
+                                    <div className="pointer-none text-blue-600 hover:underline ">
+                                        <button style={{ display: "block", width: "120px", height: "30px" }} >Upload Recipe</button>
                                         <input type="file" id="getFile" style={{ display: "none" }} className="" />
                                     </div>
                                 </div>
