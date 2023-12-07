@@ -1,43 +1,161 @@
 "use client"
 
-import { createPost } from "../actions";
+import { createPost, getSignedURL } from "../actions";
 import { useState } from "react";
-import { auth } from "@/auth"
 
-
-
-function handleClick(e: React.FormEvent) {
-    e.preventDefault()
-    document.getElementById('getFile')?.click()
-}
 
 interface FormProps {
     userId: string
 }
-export default async function Form({userId}:FormProps) {
-    
+export default function Form({ userId }: FormProps) {
+
     const [recipeName, setRecipeName] = useState("");
     const [mins, setMins] = useState(0);
     const [servings, setServings] = useState(0);
     const [description, setDescription] = useState("");
-    const [image, setImage] = useState("");
-    const [file, setFile] = useState("");
-    // const [loading, setLoading] = useState(true);
+    const [image, setImage] = useState<File | null>(null);
+    const [file, setFile] = useState<File | null>(null);
+    const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+    const [previewFileUrl, setPreviewFileUrl] = useState<string | null>(null);
+    const [statusMessage, setStatusMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setStatusMessage("creating");
+        setLoading(true);
         
-        if(userId) {
-            const result = await createPost(recipeName, mins, servings, description, image, file, userId)
+        let submitButton = document.getElementById('submitButton') as HTMLButtonElement | null;
+        if(submitButton){
+            submitButton.disabled = true
+            submitButton.classList.remove("bg-blue-500")
+            submitButton.classList.add("bg-gray-300")
+        }
+        
+
+        const computeSHA256 = async (file: File) => {
+            const buffer = await file.arrayBuffer();
+            const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray
+              .map((b) => b.toString(16).padStart(2, "0"))
+              .join("");
+            return hashHex;
+          };
+
+          let signedFileURLResult;
+          let fileId;
+        if (file) {
+            setStatusMessage("uploading");
+                signedFileURLResult = await getSignedURL({
+                fileSize: file.size,
+                fileType: file.type,
+                checksum: await computeSHA256(file),
+              })
+            if (signedFileURLResult.failure !== undefined) {
+                console.error(signedFileURLResult.failure)
+                return
+            }
+
+            const { url, id }  = signedFileURLResult.success
+            fileId = id;
+            console.log({ url })
+            await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": file.type,
+                },
+                body: file,
+            })
         }
 
+        let signedImageURLResult;
+        let imageId;
+        if (image) {
+                signedImageURLResult = await getSignedURL({
+                fileSize: image.size,
+                fileType: image.type,
+                checksum: await computeSHA256(image),
+              })
+            if (signedImageURLResult.failure !== undefined) {
+                console.error(signedImageURLResult.failure)
+                return
+            }
+
+            const { url, id }  = signedImageURLResult.success
+            imageId = id;
+            console.log({ url })
+            await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": image.type,
+                },
+                body: image,
+            })
+            
+        }
+
+        console.log("test" + userId)
+        console.log("test" + signedFileURLResult)
+        console.log("test" + signedImageURLResult )
+        if (userId && signedFileURLResult?.success.id && signedImageURLResult?.success.id) {
+            console.log("testing")
+            const result = await createPost(recipeName, mins, servings, description, userId, fileId ?? 0, imageId ?? 0)
+        }
+
+        if(submitButton){
+            submitButton.disabled = false
+            submitButton.classList.remove("bg-gray-300")
+            submitButton.classList.add("bg-blue-500")
+        }
+
+        setStatusMessage("created");
+        setLoading(false);
         setRecipeName("");
         setMins(0);
         setServings(0);
         setDescription("");
-        setImage("");
-        setFile("");
+        setImage(null);
+        setFile(null);
+    };
+
+
+    function handleFileClick(e: React.FormEvent) {
+        e.preventDefault()
+        document.getElementById('getImage')?.click()
+    }
+
+    function handleImageClick(e: React.FormEvent) {
+        e.preventDefault()
+        document.getElementById('getFile')?.click()
+    }
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] ?? null;
+        setImage(file);
+        if (previewImageUrl) {
+            URL.revokeObjectURL(previewImageUrl);
+        }
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setPreviewImageUrl(url);
+        } else {
+            setPreviewImageUrl(null);
+        }
+    };
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] ?? null;
+        setFile(file);
+        if (previewFileUrl) {
+            URL.revokeObjectURL(previewFileUrl);
+        }
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setPreviewFileUrl(url);
+        } else {
+            setPreviewFileUrl(null);
+        }
     };
 
     return (
@@ -52,18 +170,18 @@ export default async function Form({userId}:FormProps) {
                 <form className="mt-8 space-y-3" onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 space-y-2">
                         <input className="w-full text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="text" placeholder="Recipe Name"
-                        onChange={(e) => setRecipeName(e.target.value)}
+                            onChange={(e) => setRecipeName(e.target.value)}
                         />
                         <div className="flex justify-between w-full">
                             <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="number" placeholder="Cooking Time"
-                            onChange={(e) => setMins(parseInt(e.target.value))}
+                                onChange={(e) => setMins(parseInt(e.target.value))}
                             />
-                            <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="number" placeholder="Servings" 
-                            onChange={(e) => setServings(parseInt(e.target.value))}
+                            <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="number" placeholder="Servings"
+                                onChange={(e) => setServings(parseInt(e.target.value))}
                             />
                         </div>
-                        <textarea className="w-full text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="Description" 
-                        onChange={(e) => setDescription(e.target.value)}
+                        <textarea className="w-full text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="Description"
+                            onChange={(e) => setDescription(e.target.value)}
                         />
                     </div>
                     <div className="grid grid-cols-1 space-y-2">
@@ -73,9 +191,20 @@ export default async function Form({userId}:FormProps) {
                                 <div className="h-full w-full text-center flex flex-col items-center justify-center">
                                     <div className="flex flex-auto max-h-48 w-2/5 mx-auto -mt-10">
                                     </div>
+                                    {
+                                        previewImageUrl && image && (
+                                            <div className="mt-4">
+                                                {image.type.startsWith("image/") ? (
+                                                    <img src={previewImageUrl} alt="Selected file" />
+                                                ) : image.type.startsWith("video/") ? (
+                                                    <video src={previewImageUrl} controls />
+                                                ) : null}
+                                            </div>
+                                        )
+                                    }
                                     <div className="pointer-none text-blue-600 hover:underline ">
-                                        <button style={{ display: "block", width: "120px", height: "30px" }} >Upload Image</button>
-                                        <input type="file" id="getFile" style={{ display: "none" }} className="" />
+                                        <button style={{ display: "block", width: "120px", height: "30px" }} onClick={handleFileClick}>Upload Image</button>
+                                        <input type="file" id="getImage" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm" style={{ display: "none" }} onChange={(e) => handleImageChange(e)} className="" />
                                     </div>
                                 </div>
                             </div>
@@ -89,8 +218,8 @@ export default async function Form({userId}:FormProps) {
                                     <div className="flex flex-auto max-h-48 w-2/5 mx-auto -mt-10">
                                     </div>
                                     <div className="pointer-none text-blue-600 hover:underline ">
-                                        <button style={{ display: "block", width: "120px", height: "30px" }} >Upload Recipe</button>
-                                        <input type="file" id="getFile" style={{ display: "none" }} className="" />
+                                        <button style={{ display: "block", width: "120px", height: "30px" }} onClick={handleImageClick}>Upload Recipe</button>
+                                        <input type="file" id="getFile" accept=".docx,.txt,.pdf" style={{ display: "none" }} onChange={(e) => handleFileChange(e)} className="" />
                                     </div>
                                 </div>
                             </div>
@@ -100,8 +229,8 @@ export default async function Form({userId}:FormProps) {
                         <span>File type: doc,pdf,types of images</span>
                     </p>
                     <div>
-                        <button type="submit" className="my-5 w-full flex justify-center bg-blue-500 text-gray-100 p-4  rounded-full tracking-wide
-                                        font-semibold  focus:outline-none focus:shadow-outline hover:bg-blue-600 shadow-lg cursor-pointer transition ease-in duration-300">
+                        <button type="submit" id="submitButton" className="my-5 w-full flex justify-center bg-blue-500 text-gray-100 p-4  rounded-full tracking-wide
+                                        font-semibold  focus:outline-none focus:shadow-outline shadow-lg cursor-pointer transition ease-in duration-300">
                             Upload
                         </button>
                     </div>

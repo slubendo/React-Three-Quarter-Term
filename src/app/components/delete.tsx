@@ -1,17 +1,19 @@
 import { Suspense } from "react"
 import DeleteCore from "./deleteCore"
 import DeleteSkeleton from "./deleteSkeleton"
+import { auth } from "@/auth"
 
 interface DeleteProps {
     id: number
+    postUserId:string
 }
 
-export default function Delete({ id }: DeleteProps) {
+export default async function Delete({ id, postUserId }: DeleteProps) {
+    const session = await auth()
 
-    let deleteId = id
     return (
             <Suspense fallback={<DeleteSkeleton/>}>
-                <DeleteCore id={deleteId} />
+                <DeleteCore id={id} postUserId={postUserId} sessionId={session?.user.id ?? ""} />
             </Suspense>
     )
 }

@@ -3,14 +3,15 @@ import { db, eq, desc } from "@/db"
 import { users as usersTable } from "@/db/schema/schema"
 import { posts as postsTable } from "@/db/schema/schema"
 
-const feedQuery = db
+export const feedQuery = db
   .select({
     id: postsTable.id,
+    recipeName: postsTable.recipeName,
     content: postsTable.content,
     servings: postsTable.servings,
-    mins: postsTable.createdAt,
-    url: postsTable.createdAt,
-    file: postsTable.createdAt,
+    mins: postsTable.mins,
+    url: postsTable.url,
+    file: postsTable.file,
     createdAt: postsTable.createdAt,
     
     user: {

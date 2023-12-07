@@ -4,7 +4,7 @@ import {
     text,
     primaryKey,
    integer,
-   serial
+   serial  
   } from "drizzle-orm/pg-core"
   import type { AdapterAccount } from '@auth/core/adapters'
   
@@ -23,10 +23,18 @@ import {
     content: text("content").notNull(),
     servings: integer("servings").notNull(),
     mins: integer("mins").notNull(),
-    url: text("url").notNull(),
-    file: text("file").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   })
+
+
+export const media = pgTable("media", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  postId: integer("post_id").references(() => posts.id),
+  type: text("type").notNull(),
+  url: text("url").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+})
 
   export const accounts = pgTable(
   "account",
