@@ -13,7 +13,7 @@ export default async function Post({ post }: PostProps) {
     const session = await auth()
     const download = await downloadQuery.execute()
 
-    const downloadInfoArr = download?.filter(post => post.media.type.includes("image") && post.media.type.includes("video"));
+    const downloadInfoArr = download?.filter(post =>  post.media.type.includes("image") && post.media.type.includes("video"));
     const downloadInfo = downloadInfoArr[0]
     
     return (
