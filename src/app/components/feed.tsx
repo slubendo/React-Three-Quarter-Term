@@ -7,11 +7,12 @@ interface FeedProps {
 
 export default function Feed({ postArr }: FeedProps) {
 
-    const feed = postArr?.map(post => <Post post={post}></Post>)
+    const feed = postArr?.filter(post => post.media.type.includes("image") || post.media.type.includes("image"))
+    console.log(postArr)
 
     return (
         <div className="feed">
-            {postArr?.map(post => 
+            {feed?.map(post => 
             <Post post={post}></Post>
             )}
         </div>

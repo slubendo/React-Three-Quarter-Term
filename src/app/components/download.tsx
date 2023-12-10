@@ -4,14 +4,14 @@ import DownloadCore from "./downloadCore"
 
 interface DownloadProps {
     id: number
-    key:string
+    keyProp:string
 }
 
-export default function Download({ id, key }: DownloadProps) {
+export default function Download({ id, keyProp }: DownloadProps) {
 
     return (
             <Suspense fallback={<DownloadCoreSkeleton/>}>
-                <DownloadCore id={id} key={key} />
+                <DownloadCore id={id} keyProp={keyProp} />
             </Suspense>
     )
 }

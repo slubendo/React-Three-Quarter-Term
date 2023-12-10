@@ -192,7 +192,7 @@ export async function getSignedURL({
 
 
 type GetSignedDownloadURLParams = {
-  key: string
+  keyProp: string
   id: number
 }
 
@@ -203,11 +203,11 @@ type SignedURLDownloadResponse = Promise<
 
 export async function getSignedDownloadURL({
   id,
-  key,
+  keyProp,
 }: GetSignedDownloadURLParams): SignedURLDownloadResponse {
 
 
-
+  const key = keyProp.split("/").slice(-1)[0]
   const getObjectCommand = new GetObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME!,
     Key: key,

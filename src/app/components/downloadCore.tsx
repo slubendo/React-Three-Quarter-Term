@@ -1,18 +1,18 @@
-import AWS from 'aws-sdk';
+"use client"
 import { getSignedDownloadURL } from '../actions';
 
 
 interface DownloadCoreProps {
     id: number;
-    key: string;
+    keyProp: string;
 }
 
-export default function DownloadCore({ id, key }: DownloadCoreProps) {
+export default function DownloadCore({ id, keyProp }: DownloadCoreProps) {
 
     const handleClick = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const signedDownloadURLResult = await getSignedDownloadURL({ id, key })
+        const signedDownloadURLResult = await getSignedDownloadURL({ id, keyProp })
         if (signedDownloadURLResult.failure !== undefined) {
             console.error(signedDownloadURLResult.failure)
             return
