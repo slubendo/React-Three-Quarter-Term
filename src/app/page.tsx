@@ -13,7 +13,7 @@ export default async function Home() {
   return (
     <main>
 
-      {session?.user ? <Form userId={session?.user.id ?? ""}></Form> : <Login></Login>}
+      {/* {session?.user ? <Form userId={session?.user.id ?? ""}></Form> : <Login></Login>} */}
       <Feed postArr={posts} ></Feed>
     </main>
   )

@@ -181,14 +181,14 @@ export default function Form({ userId }: FormProps) {
                             />
                         </div>
                         <textarea className="w-full text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="Description"
-                            onChange={(e) => setDescription(e.target.value)}
+                                onChange={(e) => setDescription(e.target.value)}
                         />
                     </div>
                     <div className="grid grid-cols-1 space-y-2">
                         <div className="text-sm font-bold text-gray-500 tracking-wide">Attach an Image</div>
                         <div className="flex items-center justify-center w-full">
                             <div className="flex flex-col rounded-lg border-4 border-dashed w-full p-10 group text-center">
-                                <div className="h-full w-full text-center flex flex-col items-center justify-center">
+                                <div className="h-full w-full te    xt-center flex flex-col items-center justify-center">
                                     <div className="flex flex-auto max-h-48 w-2/5 mx-auto -mt-10">
                                     </div>
                                     {
